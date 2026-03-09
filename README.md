@@ -1,4 +1,4 @@
-![License](https://img.shields.io/badge/license-MIT-green)
+![License](https://img.shields.io/badge/license-GPLv2-blue)
 ![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-c51a4a)
 ![OS](https://img.shields.io/badge/OS-Arch%20Linux%20ARM-1793d1)
 ![Status](https://img.shields.io/badge/status-v1--in--progress-orange)
@@ -31,4 +31,4 @@ V2 targets a Raspberry Pi 4 with an I2S audio codec, 3D-printed enclosure, and T
 
 ## License
 
-[MIT](LICENSE)
+[GPLv2](LICENSE)
