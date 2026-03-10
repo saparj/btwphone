@@ -1,4 +1,6 @@
-# It's 01:00 on a worknight, I'll make this pretty later
+# Building pjsip on Arch Linux ARM
+
+Tested on Raspberry Pi 3 Model B+ running Arch Linux ARM - March 2026
 
 ## Install build dependencies
 
@@ -40,10 +42,6 @@ make dep
 make
 ```
 
-Note to self here: created a 1024Mb swapfile, watch htop during `make` and see if it actually uses it.
-RPi3 has 1024Mb of physical ram while RPi4 has 2048 so this shouldn't be an issue but still worth noting.
-Yes - uses around 1148Mb of RAM+Swapfile
-
 ## Install core libraries
 
 ```bash
@@ -53,8 +51,13 @@ sudo ldconfig
 
 Build the python SWIG bindings:
 
+```
+Note: The SWIG binding compilation (`pjsua2_wrap.cpp`) is a single-file compile that peaked at ~1148 MB RAM+swap on a 1 GB Pi 3B+. A swapfile is essential on boards with less than 2 GB RAM.
+```
+
 ```bash
 cd pjsip-apps/src/swig/python
+# Setuptools is a workaround - Python 3.12+ removed distutils and 3.14 doesn't ship setuptools, so this step is needed on newer Python versions
 pip install setuptools --break-system-packages
 make
 ```
@@ -69,4 +72,5 @@ The moment of truth:
 
 ```bash
 python -c "import pjsua2; print('pjsua2 imported successfully')"
+```
 
