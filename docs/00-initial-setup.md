@@ -49,6 +49,7 @@ Hostname, timezone, locale:
 
 ```bash
 hostnamectl set-hostname btwphone
+# Change to your timezone - find with: timedatectl list-timezones
 ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
 hwclock --systohc
 # Locale
@@ -57,11 +58,16 @@ locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 ```
 
+```bash
+# Exit root, log back in as your new user
+exit
+```
+
 ## Package Install
 
 ```bash
 sudo pacman -S base-devel git python python-pip neovim sudo vim \
-  alsa-lib alsa-utils openssl swig tmux htop raspberrypi-utils
+  tmux htop raspberrypi-utils
 
 pip install setuptools pynvim --break-system-packages
 ```
@@ -71,6 +77,9 @@ pip install setuptools pynvim --break-system-packages
 ```bash
 # Edit fstab - add noatime,nodiratime,discard to the root entry
 # This helps preserve SD Card life
+# Verify your root device first
+findmnt /
+# Then add the netry using your SOURCE value from above
 echo "/dev/mmcblk1p2 / ext4 defaults,noatime,nodiratime,discard 0 1" | sudo tee -a /etc/fstab
 # Verify settings have applied
 sudo mount -o remount /
@@ -84,6 +93,6 @@ sudo swapon /swapfile
 echo "/swapfile none swap defaults 0 0" | sudo tee -a /etc/fstab
 
 # Lower swappiness
-echo "vm.swappiness=1" | sudo tee /etc/sysctl.d/99-swapiness.conf
+echo "vm.swappiness=1" | sudo tee /etc/sysctl.d/99-swappiness.conf
 ```
 
