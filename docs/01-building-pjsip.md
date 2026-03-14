@@ -38,9 +38,10 @@ Watch to make sure it detects ALSA and OpenSSL.
 ## Build
 
 ```bash
-make dep
-make
+make dep && make -j$(nproc)
 ```
+
+The `-j$(nproc)` flag parallelizes the build across all 4 cores
 
 ## Install core libraries
 
@@ -51,26 +52,38 @@ sudo ldconfig
 
 Build the python SWIG bindings:
 
-```
-Note: The SWIG binding compilation (`pjsua2_wrap.cpp`) is a single-file compile that peaked at ~1148 MB RAM+swap on a 1 GB Pi 3B+. A swapfile is essential on boards with less than 2 GB RAM.
-```
-
 ```bash
 cd pjsip-apps/src/swig/python
-# Setuptools is a workaround - Python 3.12+ removed distutils and 3.14 doesn't ship setuptools, so this step is needed on newer Python versions
-pip install setuptools --break-system-packages
 make
-```
-
-If you're on a shared environment please be nice and use .venv instead of breaking system packages.
-
-```bash
 sudo make install
 ```
 
-The moment of truth:
+Other steps:
 
 ```bash
+cp /home/saparj/pjproject/pjsip-apps/src/swig/python/build/lib.linux-aarch64-cpython-314/_pjsua2.cpython-314-aarch64-linux-gnu.so \
+   /home/saparj/pjproject/pjsip-apps/src/swig/python/
+echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/pjsip.conf
+sudo ldconfig
+```
+
+Validation:
+
+```bash
+python -c "import pjsua2; print('pjsua2 imported successfully')"
+```
+
+Install pjsip as a system package:
+
+```bash
+sudo chown -R saparj:saparj /home/saparj/pjproject/pjsip-apps/src/swig/python/pjsua2.egg-info
+pip install . --break-system-packages
+```
+
+Test from home directory:
+
+```bash
+cd ~
 python -c "import pjsua2; print('pjsua2 imported successfully')"
 ```
 
